@@ -14,129 +14,233 @@
 #include <unordered_map>
 #include <sstream>
 #include <set>
+#include <cassert>
 using namespace std;
-#define MMAX ((int)1e5)
-__int64 data[2 * MMAX + 10], size;
-map<__int64, int> mii;
-int type[MMAX];
-__int64 L[MMAX], R[MMAX];
+
+//ifstream in("C:\\input.txt");
+istream& in = cin;
+typedef long long LL;
+#define pii pair<int,int>
+#define pll pair<LL,LL>
+#define mp make_pair
+#define pb push_back
+#define lson (root<<1)  
+#define rson (root<<1|1)  
+
+#define MMAX (((int)2e5)+10)
+set<LL> all;
+LL D[MMAX];
+
 int N;
-__int64 MAXR;
+LL MAXR;
 struct Node{
-	int l, r;
-	int state;//1 full   2 empty   0 no
+	LL l, r;
+	int state;//1 full   0 empty   2 no
+	int lazy;
+	bool end;
 }tree[2 * MMAX * 4 + 10];
 
 void build(int root,int l,int r){
-	tree[root].l = l;
-	tree[root].r = r;
-	tree[root].state = 2;
-	if (l >= r - 1){
-		
+	tree[root].l = D[l];
+	tree[root].r = D[r] - 1;
+	tree[root].state = 0;
+	tree[root].lazy = -1;
+	tree[root].end = 0;
+	if (l+1==r){
+		tree[root].end = 1;
+		return;
 	}
 	else{
 		int mid = (l + r) / 2;
-		build(root * 2, l, mid);
-		build(root * 2 + 1, mid + 1, r);
+		build(lson, l, mid);
+		build(rson, mid, r);
 	}
 }
 
-
-int upd(int root,int l,int r,int type){
-	if (type == 3){
-		int t = 0;
+int op_state(int a){
+	if (a == 2){
+		return 2;
 	}
+	return 1 - a;
+
+}
+
+void pushDown(int root){
+	if (tree[root].lazy == -1)
+		return;
 
 
-	if (tree[root].l >= tree[root].r - 1){
-		if (tree[root].l >= l && tree[root].r <= r){
-			if (type == 1 || type == 2){
-				tree[root].state = type;
-			}
-			else{
-				tree[root].state = 3 - tree[root].state;
-			}
+
+	if (tree[root].lazy == 1){
+		tree[lson].lazy = tree[root].lazy;
+		tree[lson].state = 1;
+		tree[rson].lazy = tree[root].lazy;
+		tree[rson].state = 1;
+	}
+	else if (tree[root].lazy == 2){
+		tree[lson].lazy = tree[root].lazy;
+		tree[lson].state = 0;
+		tree[rson].lazy = tree[root].lazy;
+		tree[rson].state = 0;
+
+	}
+	else{
+		if (tree[lson].lazy == 1){
+			tree[lson].lazy = 2;
+			tree[lson].state = 0;
 		}
-		return tree[root].state;
-	}
-	if (type == 1 || type == 2){
-		if (tree[root].l >= l && tree[root].r <= r ){
-			tree[root].state = type;
+		else if (tree[lson].lazy == 2){
+			tree[lson].lazy = 1;
+			tree[lson].state = 1;
+		}
+		else if (tree[lson].lazy == 3){
+			tree[lson].lazy = -1;
+			tree[lson].state = op_state(tree[lson].state);
 		}
 		else{
-			int a = upd(root * 2, l, r, type);
-			int b = upd(root * 2 + 1, l, r, type);
-			if (a != b){
-				tree[root].state = 0;
-			}
-			else{
-				tree[root].state = a;
-			}
+			tree[lson].lazy = 3;
+			tree[lson].state = op_state(tree[lson].state);
+		}
+
+		if (tree[rson].lazy == 1){
+			tree[rson].lazy = 2;
+			tree[rson].state = 0;
+		}
+		else if (tree[rson].lazy == 2){
+			tree[rson].lazy = 1;
+			tree[rson].state = 1;
+		}
+		else if (tree[rson].lazy == 3){
+			tree[rson].lazy = -1;
+			tree[rson].state = op_state(tree[rson].state);
+		}
+		else{
+			tree[rson].lazy = 3;
+			tree[rson].state = op_state(tree[rson].state);
+		}
+
+
+	}
+	tree[root].lazy = -1;
+
+}
+
+void pushUp(int root){
+	if (tree[lson].state == 2 || tree[rson].state == 2){
+		tree[root].state = 2;
+	}
+	if (tree[lson].state == tree[rson].state)
+		tree[root].state = tree[lson].state;
+	else
+		tree[root].state = 2;
+}
+
+
+void update(int root, LL l, LL r, LL type){
+	
+	if (tree[root].l > r || tree[root].r < l)
+		return;
+	
+
+	if (!tree[root].end)
+		pushDown(root);
+	if (tree[root].l >= l && tree[root].r <= r){
+		if (type == 1){
+			tree[root].state = 1;
+			tree[root].lazy = 1;
+		}
+		else if (type == 2){
+			tree[root].state = 0;
+			tree[root].lazy = 2;
+		}
+		else{
+			tree[root].lazy = 3;
+			tree[root].state = op_state(tree[root].state);
 		}
 	}
 	else{
-		if (tree[root].state == 1 || tree[root].state == 2){
-			tree[root].state = 3 - tree[root].state;
+		update(lson, l, r, type);
+		update(rson, l, r, type);
+		pushUp(root);
+	}
+
+
+}
+int kk;
+LL query(int root){
+	pushDown(root);
+	
+	if (tree[root].end){
+		assert(tree[root].state != 2);
+		if (tree[root].state == 0){
+			return tree[root].l;
 		}
 		else{
-			int a = upd(root * 2, l, r, type);
-			int b = upd(root * 2 + 1, l, r, type);
-			if (a != b){
-				tree[root].state = 0;
-			}
-			else{
-				tree[root].state = a;
-			}
+			return MAXR;
 		}
 	}
-	return tree[root].state;
-}
-
-__int64 query(int root){
 	if (tree[root].state == 0){
-		__int64 lret = query(root * 2);
-		__int64 rret = query(root * 2 + 1);
-		return min(lret, rret);
+		return tree[root].l;
 	}
 	else if (tree[root].state == 1){
 		return MAXR;
 	}
 	else{
-		return data[tree[root].l-1];
+		
+		LL lf = query(lson);
+		if (lf != MAXR)
+			return lf;
+		LL rt = query(rson);
+		pushUp(root);
+		
+		return rt;
 	}
+
+
+	
 }
 
+LL op[MMAX],a[MMAX], b[MMAX];
+int n;
+void input(){
+	in >> N;
+	all.insert(1);
+	for (int i = 1; i <= N; ++i){
+	//	in >> op[i] >> a[i] >> b[i];
+		scanf("%lld%lld%lld", &op[i], &a[i], &b[i]);
+		all.insert(a[i]);
+	/*	all.insert(b[i]);
+		if (a[i] - 1 > 0)
+			all.insert(a[i] - 1);
+		if (b[i] - 1 > 0)
+			all.insert(b[i] - 1);
+		all.insert(a[i] + 1);*/
+		all.insert(b[i] + 1);
+		MAXR = max(MAXR, b[i] + 1);
+	}
+	n = 1;
+	for (LL p : all){
+		D[n++] = p;
+	}
+	n--;
+	build(1, 1, n);
 
+
+
+
+}
 
 int main(){
-	ifstream in("C:\\input.txt");
-	//istream& in = cin;
-	in >> N;
-	for (int i = 0; i < N; ++i){
 
-		in >> type[i] >> L[i] >> R[i];
-		data[i * 4] = L[i];
-		data[i * 4 + 1] = R[i];
-		if (L[i] > 1)
-			data[i * 4 + 2] = L[i] - 1;
-		else{
-			data[i * 4 + 2] = L[i];
-		}
-		data[i * 4 + 3] = R[i] + 1;
-	}
-	size = 4 * N;
-	sort(data, data + size);
-	size = unique(data, data + size) - data;
-	for (int i = 0; i < size; ++i)
-		mii[data[i]] = i + 1;
-	MAXR = data[size - 1];
-	size--;
 
-	build(1, 1, size);
+	input();
 
-	for (int i = 0; i < N; ++i){
-		upd(1, mii[L[i]], mii[R[i]],type[i]);
-		printf("%I64d\n", query(1));
+
+
+	for (int i = 1; i <= N; ++i){
+	
+		update(1, a[i], b[i], op[i]);
+		printf("%lld\n", query(1));
 	}
 
 	return 0;
