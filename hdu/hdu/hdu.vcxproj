@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{89799D17-6646-4699-B5EF-E81B907BCC31}</ProjectGuid>
+    <ProjectGuid>{2EF532FB-6C82-4568-9855-F32A354673A4}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>hdu</RootNamespace>
   </PropertyGroup>
