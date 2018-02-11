@@ -4,25 +4,31 @@
 #include <cmath>
 using namespace std;
 bool dp[2001];
-int fun(int n){
-	int res = 0;
-	for (int i = 1; i <= sqrt(n);++i)
-	if (n%i == 0)
-		res += i;
-	return res;
-}
+#define MMAX 1000010
+int F[MMAX];
+
 int main(){
 //	ifstream in("C:\\temp.txt");
-	for (int i = 2; i <= 1000; ++i)
-		dp[fun(i)] = 1;
+	
+	for (int i = 1; i < MMAX; ++i){
+		if (F[i] < 1100){
+			dp[F[i]] = 1;
+		}
+		for (int j = i + i; j < MMAX; j += i)
+			F[j] += i;
+		
+	}
+
 	int T, N;
-	cin >> T;
+//	cin >> T;
+	scanf("%d", &T);
 	while (T--){
-		cin >> N;
+	//	cin >> N;
+		scanf("%d", &N);
 		if (dp[N])
-			cout << "no" << endl;
+			printf("no\n");
 		else
-			cout << "yes" << endl;
+			printf("yes\n");
 	}
 	return 0;
 }

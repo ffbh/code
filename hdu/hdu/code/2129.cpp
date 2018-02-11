@@ -9,7 +9,14 @@ struct Contest{
 	int g, s, c;
 	string name;
 	bool operator<(const Contest& p)const{
-		return name < p.name;
+		if (name != p.name)
+			return name < p.name;
+		else if (g != p.g)
+			return g < p.g;
+		else if (s != p.s)
+			return s < p.s;
+		else
+			return c < p.c;
 	}
 };
 
@@ -24,7 +31,9 @@ struct Team{
 			return s > p.s;
 		else if (c != p.c)
 			return c > p.c;
+
 		return name < p.name;
+
 	}
 	bool operator==(const Team& p)const{
 		return g == p.g&&s == p.s&&c == p.c;
@@ -54,7 +63,8 @@ Contest C[20001];
 School S[201];
 
 int main(){
-	ifstream in("C:\\temp.txt");
+	//ifstream in("C:\\temp.txt");
+	istream& in = cin;
 	map<string, int> msiC;
 	map<string, int> msiS;
 	Team temp;
