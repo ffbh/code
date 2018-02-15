@@ -10,6 +10,9 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="A Colourful Prospect.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{263F3E98-19DE-4786-9FEA-399A78F64AF0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
