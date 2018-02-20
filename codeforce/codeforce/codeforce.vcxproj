@@ -10,8 +10,11 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Erasing Substrings.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{263F3E98-19DE-4786-9FEA-399A78F64AF0}</ProjectGuid>
+    <ProjectGuid>{8568DB6C-7E25-4CDC-A2D1-6408F87D3A12}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>codeforce</RootNamespace>
   </PropertyGroup>
