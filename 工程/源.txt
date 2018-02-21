@@ -17,8 +17,13 @@
 #include <cassert>
 using namespace std;
 
+#ifndef ONLINE_JUDGE
 ifstream in("C:\\input.txt");
-//istream& in = cin;
+#endif
+
+#ifdef ONLINE_JUDGE
+istream& in = cin;
+#endif
 
 
 typedef long long LL;
@@ -26,7 +31,8 @@ typedef long long LL;
 #define pll pair<LL,LL>
 #define mp make_pair
 #define pb push_back
-
+#define lson (root<<1)  
+#define rson (root<<1|1)  
 
 
 

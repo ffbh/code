@@ -17,8 +17,14 @@
 #include <cassert>
 using namespace std;
 
-//ifstream in("C:\\input.txt");
+#ifndef ONLINE_JUDGE
+ifstream in("C:\\input.txt");
+#endif
+
+#ifdef ONLINE_JUDGE
 istream& in = cin;
+#endif
+
 
 
 typedef long long LL;
