@@ -10,9 +10,6 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Garden.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F0166B6F-ABC8-4D56-A2E9-A0EA52423061}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
