@@ -1,1 +1,3 @@
-.sdf
+*
+!*.cpp
+!*.gitignore
