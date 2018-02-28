@@ -38,7 +38,7 @@ typedef long long LL;
 int n, m;
 int store[210];
 vector<int> vi[210];
-pii mmp[210][210];
+pii mmp[410][410];
 
 int INF = (1 << 25);
 vector<int> edge[410];
