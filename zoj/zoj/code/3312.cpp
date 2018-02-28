@@ -79,8 +79,73 @@ unordered_map<int, string> M;
 //}
 
 unordered_set<int> vis[10];
+//
+//void DFS(int pre, int k, int d){
+//	if (vis[k].count(pre))
+//		return;
+//	vis[k].insert(pre);
+//	/*if (k == 8){
+//	string s = "";
+//	for (int i = 0; i < d; ++i){
+//	if (s.length() != 0)
+//	s = '(' + s + ')' + data[i].c + IntToString(data[i].num);
+//	else{
+//	if (data[i].c == '-')
+//	s = data[i].c + IntToString(data[i].num);
+//	else
+//	s = IntToString(data[i].num);
+//	}
+//	}
+//	out << s+'='+ IntToString(pre) << endl;
+//	}*/
+//	if (k == 8){
+//		if (M.count(pre))
+//			return;
+//		string s = "";
+//		
+//		for (int i = 0; i < d; ++i){
+//			if (s.length() != 0)
+//				s = '(' + s + ')' + data[i].c + ddd[data[i].num];
+//			else{
+//				if (data[i].c == '-')
+//					s = data[i].c + ddd[data[i].num];
+//				else
+//					s = ddd[data[i].num];
+//			}
+//		}
+//		M[pre] = s;
+//		return;
+//	}
+//
+//	for (int i = k + 1; i <= 8; ++i){
+//		if (d != 0){
+//			data[d].c = '*';
+//			data[d].num = i-k;
+//			DFS(pre * dig[i - k], i, d + 1);
+//		
+//
+//			data[d].c = '/';
+//			data[d].num = i-k;
+//			DFS(pre / dig[i - k], i, d + 1);
+//
+//			data[d].c = '-';
+//			data[d].num = i-k;
+//			DFS(pre - dig[i - k], i, d + 1);
+//
+//		}
+//		data[d].c = '+';
+//		data[d].num = i-k;
+//		DFS(pre + dig[i - k], i, d + 1);
+//			
+//
+//		
+//		
+//	}
+//}
 
-void DFS(int pre, int k, int d){
+
+
+void DFS(int pre, int k, string& s){
 	if (vis[k].count(pre))
 		return;
 	vis[k].insert(pre);
@@ -99,59 +164,47 @@ void DFS(int pre, int k, int d){
 	out << s+'='+ IntToString(pre) << endl;
 	}*/
 	if (k == 8){
-		if (M.count(pre))
-			return;
-		string s = "";
-		
-		for (int i = 0; i < d; ++i){
-			if (s.length() != 0)
-				s = '(' + s + ')' + data[i].c + ddd[data[i].num];
-			else{
-				if (data[i].c == '-')
-					s = data[i].c + ddd[data[i].num];
-				else
-					s = ddd[data[i].num];
-			}
-		}
 		M[pre] = s;
 		return;
 	}
 
 	for (int i = k + 1; i <= 8; ++i){
-		if (d != 0){
-			data[d].c = '*';
-			data[d].num = i-k;
-			DFS(pre * dig[i - k], i, d + 1);
-		
+		string tmp;
+		if (s.length() != 0){
+			tmp = "(" + s + ")" + "*" + ddd[i - k];
+			DFS(pre * dig[i - k], i, tmp);
 
-			data[d].c = '/';
-			data[d].num = i-k;
-			DFS(pre / dig[i - k], i, d + 1);
+			tmp = "(" + s + ")" + "/" + ddd[i - k];
+			DFS(pre / dig[i - k], i, tmp);
 
-			data[d].c = '-';
-			data[d].num = i-k;
-			DFS(pre - dig[i - k], i, d + 1);
+			tmp = "(" + s + ")" + "-" + ddd[i - k];
+			DFS(pre - dig[i - k], i, tmp);
 
 		}
-		data[d].c = '+';
-		data[d].num = i-k;
-		DFS(pre + dig[i - k], i, d + 1);
-			
+		if (s.length() == 0){
+			tmp = ddd[i - k];
+		}
+		else{
+			tmp = "(" + s + ")" + "+" + ddd[i - k];
+		}
+		
+		DFS(pre + dig[i - k], i, tmp);
 
-		
-		
 	}
 }
 
 
 int main(){
 	ifstream in("C:\\input.txt");
-	DFS(0, 0, 0);
+	string s="";
+
+	DFS(0, 0, s);
 
 	int k;
 	while (scanf("%d", &k)){
 		if (M.count(k)){
 			printf("%s\n", M[k].c_str());
+		
 		}
 		else{
 			printf("Impossible\n");
