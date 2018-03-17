@@ -35,77 +35,68 @@ typedef long long LL;
 #define rson (root<<1|1)  
 
 int n, q;
-
+int C[200010];
 vector<int> vi[200010];
+vector<pair<pii,int> > Q;
 
 void Init(){
 	for (int i = 0; i < 200010; ++i)
 		vi[i].clear();
+	memset(C, 0, sizeof(C));
+	Q.clear();
 
 }
+
 
 
 void input(){
 	in >> n >> q;
 	for (int i = 1; i < n; ++i){
 		int a, b;
-	//	in >> a >> b;
-		scanf("%d%d", &a, &b);
+		in >> a >> b;
+	//	scanf("%d%d", &a, &b);
 		vi[a].push_back(b);
 		vi[b].push_back(a);
 	}
-}
 
-int cnt[600010];
-//int ll[600010], rr[600010];
-                      
 
-int cale(int al, int ar, int bl, int br){
-	int edge = 0;
 
-	for (int i = al; i <= ar; ++i){
-		int p = lower_bound(vi[i].begin(), vi[i].end(), bl) - vi[i].begin();
-		while (p < vi[i].size() && vi[i][p] >= bl &&vi[i][p] <= br){
-			edge++;
-			p++;
-		}
+	for (int i = 1; i <= q; ++i){
+		int l, r;
+		in >> l >> r;
+		Q.push_back(mp(mp(l, r),i));
+
 	}
-	return edge;
+
 }
 
 
-void build(int root, int L, int R){
-//	ll[root] = L;
-//	rr[root] = R;
-	if (L == R){
-		cnt[root] = 1;
-		return;
-	}
-	else{
-		int mid = (L + R) / 2;
-		build(lson, L, mid);
-		build(rson, mid + 1, R);
-		cnt[root] = cnt[lson] + cnt[rson] - cale(L, mid, mid + 1, R);
+
+
+int lowbit(int x){
+	return x&(-x);
+}
+
+
+void add(int p){
+	while (p <= n){
+		C[p]++;
+		p += lowbit(p);
 	}
 }
 
-int query(int root, int L, int R,int ll,int rr){
-	if (ll >= L && rr <= R){
-		return cnt[root];
+int query(int p){
+	int sum = 0;
+	while (p){
+		sum += C[p];
+		p -= lowbit(p);
 	}
-	if (ll > R || rr < L)
-		return 0;
-	int mid = (ll + rr) / 2;
-	int lq = query(lson, L, R, ll, mid);
-	int rq = query(rson, L, R, mid + 1, rr);
-
-	if (lq == 0 || rq == 0){
-		return  lq + rq;
-	}
-	else{
-		return lq + rq - cale(max(L, ll), mid, mid + 1, min(R, rr));
-	}
+	return sum;
 }
+
+
+int dp[200010], ans[200010];
+
 int main(){
 
 	int TEST_CASE = 1;
@@ -114,19 +105,47 @@ int main(){
 		Init();
 		input();
 
-	
+		dp[0] = 0;
 		for (int i = 1; i <= n; ++i){
-			sort(vi[i].begin(), vi[i].end());
+			dp[i] = dp[i - 1] + 1;
+			for (int son : vi[i]){
+				if (son < i){
+					dp[i]--;
+				}
+			}
 		}
 
-		build(1, 1, n);
+		sort(Q.begin(), Q.end());
 
-		while (q-- > 0){
-			int L, R;
-		//	in >> L >> R;
-			scanf("%d%d", &L, &R);
-			printf("%d\n", query(1, L, R, 1, n));
+
+
+		int ll = 0;
+		for (pair<pii,int> pp : Q){
+			pii& p = pp.first;
+			if (p.first == 2){
+				int t = 0;
+			}
+			while (ll < p.first - 1){
+				ll++;
+				for (int son : vi[ll]){
+					if (son > ll)
+						add(son);
+				}
+			
+			}
+			LL ak = dp[p.second] - dp[p.first - 1];
+			LL bk = query(p.second) - query(p.first - 1);
+			ans[pp.second] = ak + bk;
 		}
+		for (int i = 1; i <= q; ++i)
+			printf("%d\n", ans[i]);
+
+		
+		
+
+	
+
+		
 
 
 
