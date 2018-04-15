@@ -26,24 +26,24 @@ long long MAX_FILE_SIZE = (LL)5 * 1024 * 1024;//5M
 
 
 string getName(char* all){
-int len = strlen(all);
-assert(len > 0);
-int pos = -1;
-for(int i=len-1;i>=0;--i)
-if(all[i]=='/'){
-  pos = i;
-  break;
+  int len = strlen(all);
+  assert(len > 0);
+  int pos = -1;
+  for(int i=len-1;i>=0;--i)
+    if(all[i]=='/'){
+      pos = i;
+      break;
 }
 
 //assert(pos >= 0);
-string name = "";
-for(int i=pos+1;i<len;++i)
-  name += all[i];
-return name;
+  string name = "";
+  for(int i=pos+1;i<len;++i)
+    name += all[i];
+  return name;
 }
 
 bool is_File(const char* file){
-  FILE* fp = fopen(file,"r");
+  FILE* fp = fopen(file,"w");
   if(fp == NULL)
     return 0;
   else{
@@ -65,6 +65,7 @@ long long get_file_size(const char* file){
     
   }
 
+return 0;
 }
 
 
@@ -124,38 +125,58 @@ void LOG(string sh){
 }
 
 
-int main(int argc,char** argv){
+
+void cp_file(char* file_name){
+  string file = string(file_name);
+  string oldfile = file;
+  for(int i=0;i<oldfile.length();++i){
+    if(oldfile[i] == '/')
+       oldfile[i] = '^';
+  }
 
 
-
-log_path = log_path + string(argv[0]);
-//printf("%d\n",argc);
-///for(int i=0;i<argc;++i)
-//  printf("%s\n",argv[i]);
-
-assert(argc >= 1);
-string file = string(argv[argc-1]);
-string oldfile = file;
-
-if(file[0] != '/'){
-  file = trim(get_exec_path()) + "/" + file;
-}
-//cout<<file<<endl;
-if(is_File(file.c_str()) && get_file_size(file.c_str()) < MAX_FILE_SIZE){
-  string cmd = "cp " + file + " " + trash_path+"/"+bash_shell("date '+%Y-%m-%d@%H:%M:%S'")+"_"+oldfile;
+  if(file[0] != '/'){
+    file = trim(get_exec_path()) + "/" + file;
+  }
+  //cout<<file<<endl;
+  if(is_File(file.c_str()) && get_file_size(file.c_str()) > 0 && get_file_size(file.c_str()) < MAX_FILE_SIZE){
+    string cmd = "cp " + file + " " + trash_path+"/"+bash_shell("date '+%Y-%m-%d@%H:%M:%S'")+"_"+oldfile;
  // cout<<cmd<<endl;
-  LOG(string("echo ")+"'"+cmd+"'");
-  system(cmd.c_str());
-}
-else{
+    LOG(string("echo ")+"'"+cmd+"'");
+//  system(cmd.c_str());
+    string ret = bash_shell(cmd.c_str());
+//    LOG(ret);	
+
+  }
+  else{
   //cout<<"file is not exist or file size large than "<<MAX_FILE_SIZE<<endl;
  
   // string cmd = "echo 'file is not exist or too large' >> " + log_path + string(argv[0]);
  //  system(cmd.c_str());
-   LOG("echo 'file is not exist or too large'");
+     string error = "echo 'file " + file + " is not exist or too large'";
+     LOG(error.c_str());
+
+  }
 
 }
 
+
+
+int main(int argc,char** argv){
+/*cout<<argc<<endl;
+for(int i=0;i<argc;++i)
+  cout<<argv[i]<<endl; */
+
+
+log_path = log_path + bash_shell("date '+%Y-%m-%d'")+"_" + string(argv[0]);
+//printf("%d\n",argc);
+///for(int i=0;i<argc;++i)
+//  printf("%s\n",argv[i]);
+
+
+
+for(int i=1;i<argc;++i)
+  cp_file(argv[i]);
 
 
 string command_file = path + "/" + getName(argv[0]);
