@@ -34,15 +34,11 @@ typedef long long LL;
 #define lson (root<<1)  
 #define rson (root<<1|1)  
 
-int n;
-LL a[200010];
 
+LL n;
 
-void input() {
+void input(){
 	in>>n;
-	for(int i=1;i<=n;++i)
-		in>>a[i];
-
 
 
 }
@@ -54,16 +50,15 @@ int main(){
 	//in >> TEST_CASE;
 	while (TEST_CASE-- > 0){
 		input();
-		LL sum = 0;
-        for(int i=1;i<=n;++i)
-            sum += a[i];
-        LL mmax = sum;
-        for(int i=n-1;i>=2;--i){
-            sum -= a[i+1];
-            LL v = sum - mmax;
-            mmax = max(mmax,v);
-        }
-        cout<<mmax<<endl;
+
+		if(n % 2 == 0){
+			cout<<2<<endl;
+
+		}
+		else{
+			cout<<1<<endl;
+
+		}
 
 
 
