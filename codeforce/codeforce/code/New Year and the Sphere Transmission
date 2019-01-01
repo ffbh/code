@@ -71,7 +71,7 @@ int main(){
 		for (int k = 2; k <= sqrt(n); ++k){
 			if (n % k == 0){
 				LL num = n / k;
-				LL vv = num + (num)*(num - 1) / 2;
+				LL vv = num + (num)*(num - 1) / 2 * k;
 				ans.insert(vv);
 
 
