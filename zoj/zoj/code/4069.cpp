@@ -128,10 +128,11 @@ int main(){
 			continue;
 		}
 
-		cout << inv2[1] << endl;
+	
 
 		if (m == n){
 			printf("%lld\n", f[n - 1] * inv2[1] % mod);
+			continue;
 		}
 
 
@@ -168,7 +169,6 @@ int main(){
 
 	return 0;
 }
-
 
 
 
