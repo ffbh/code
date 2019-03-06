@@ -1,0 +1,218 @@
+#include <iostream>
+#include <string>
+#include <cstring>
+#include <fstream>
+#include <functional>
+#include <algorithm>
+#include <ctime>
+#include <cmath>
+#include <vector>
+#include <queue>
+#include <map>
+#include <sstream>
+#include <unordered_set>
+#include <unordered_map>
+#include <sstream>
+#include <set>
+#include <cassert>
+using namespace std;
+
+#ifndef ONLINE_JUDGE
+ifstream in("C:\\input.txt");
+#endif
+
+#ifdef ONLINE_JUDGE
+istream& in = cin;
+#endif
+
+
+typedef long long LL;
+#define pii pair<int,int>
+#define pll pair<LL,LL>
+#define mp make_pair
+#define pb push_back
+#define lson (root<<1)  
+#define rson (root<<1|1)  
+
+
+inline int lfh(int x, int y){
+	return y - x + (int)1e5;
+}
+
+int n, Y;
+//pii a[100010];
+
+int NUM;
+int v[100010];
+set<int> S;
+map<int,int> M[100010];
+vector<pair<pii,int> > vi[100010];
+bool suvice[100010];//是否存活
+int ID[200010];//hash存活列表
+int kill[100010];//被杀人的id
+int H[200010];//left hash
+
+void input(){
+	in >> n >> Y;
+	S.clear();
+	
+	for (int i = 1; i <= n; ++i){
+		kill[i] = -1;
+		int x, y;
+		in >> x >> y;
+		if (!S.count(x)){
+			S.insert(x);
+			M[x].clear();
+			vi[x].clear();
+		}
+		
+		int h = abs(y - Y);
+		M[x][h]++;
+		ID[x + h]  = -1;
+		H[lfh(x,h)] = -1;
+	}
+	int id = 1;
+	NUM = 0;
+	for (int x : S){
+		v[NUM++] = x;
+		for (auto xy : M[x]){
+			vi[x].push_back(mp(xy,id++));
+		}
+	}
+		
+}
+
+
+int main(){
+
+	int TEST_CASE = 1;
+	in >> TEST_CASE;
+	while (TEST_CASE-- > 0){
+		input();
+
+		NUM--;
+		int p = 0;
+		for (int k = NUM; k >= 0; --k){
+			int x = v[k];
+
+			for (auto xyid : vi[x]){
+				int y = xyid.first.first;
+				int num = xyid.first.second;
+				int id = xyid.second;
+				if (ID[x + y] != -1){
+					suvice[id] = suvice[ID[x + y]] = 0;
+					kill[id] = ID[x + y];
+					ID[x + y] = -1;
+					p--;
+				}
+				else if (num == 2){
+					suvice[id] = 0;
+				}
+				else{
+					suvice[id] = 1;
+					ID[x + y] = id;
+					p++;
+				}
+			}
+		}
+
+
+		int maxp = p, minp = p;
+	//	assert(p >= 0 && p <= n);
+
+
+		int  px = -1000, enddie = 0;
+		for (int k = 0; k <= NUM; ++k){
+			
+			int x = v[k];
+			
+			if (x == px + 1){
+				p -= enddie;
+			}
+			else{
+				p -= enddie;
+				maxp = max(p, maxp);
+				minp = min(p, minp);
+			}
+
+
+			enddie = 0;
+			for (auto xyid : vi[x]){//当前点不死人
+				int y = xyid.first.first;
+				int num = xyid.first.second;
+				int id = xyid.second;
+				if (!suvice[id]){
+					p += num;
+				}
+				if (kill[id] != -1){
+					suvice[kill[id]] = 1;
+					p += 1;
+				}
+				if (num == 1){
+					
+				//	assert(suvice[id]);
+
+					if (H[lfh(x, y)] != -1){
+						enddie += 2;
+					
+						H[lfh(x, y)] = -1;
+					}
+					else{
+						H[lfh(x, y)] = id;
+					}
+				}
+				else{
+
+					if (H[lfh(x, y)] != -1){
+						enddie += 3;
+				
+						H[lfh(x, y)] = -1;
+					}
+					else{
+						enddie += 2;
+				
+					//	H[lfh(x, y)] = -1;
+					}
+				}
+				
+			}
+
+
+			maxp = max(p, maxp);
+			minp = min(p, minp);
+	//		p -= enddie;
+	/*		maxp = max(p, maxp);
+			minp = min(p, minp);*/
+			px = x;
+		}
+
+		p -= enddie;
+		maxp = max(p, maxp);
+		minp = min(p, minp);
+
+		assert(minp >= 0);
+		assert(maxp <= n);
+		printf("%d %d\n", minp, maxp);
+
+
+
+
+
+
+
+
+
+
+
+
+
+	}
+
+
+	return 0;
+}
+
+
+
+
+
