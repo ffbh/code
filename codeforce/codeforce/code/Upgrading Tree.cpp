@@ -1,4 +1,3 @@
-#pragma comment(linker, "/STACK:204800000,204800000") 
 #include <iostream>
 #include <string>
 #include <cstring>
@@ -18,189 +17,224 @@
 #include <cassert>
 using namespace std;
 
+#ifndef ONLINE_JUDGE
+ifstream in("C:\\input.txt");
+#endif
 
-//ifstream in("C:\\input.txt");
+#ifdef ONLINE_JUDGE
 istream& in = cin;
-struct Node{
-	int x, y1, y2;
-	Node(int a, int b, int c){
-		x = a;
-		y1 = b;
-		y2 = c;
-	}
-};
+#endif
 
+
+typedef long long LL;
 #define pii pair<int,int>
+#define pll pair<LL,LL>
 #define mp make_pair
 #define pb push_back
-typedef long long LL;
-#define MMAX ((int)2e5+10)
-vector<Node> ans;
-vector<int> edge[MMAX];
-int dfs(int p,int f){
-	if (edge[p].size() == 1 && edge[p].back() == f){
-		return p;
-	}
+#define lson (root<<1)  
+#define rson (root<<1|1)  
 
-	if (p == 9){
-		int t = 0;
-	}
-
-	int ret;
-	for (int son : edge[p]){
-		if (son == f)
-			continue;
-		ret = dfs(son, p);
-		ans.push_back(Node(p, son, ret));
-	}
-	return ret;
-}
 
 
 int n;
-vector<int> vi[MMAX];
-
-int pre_dfs(int p, int f, bool root){
-	if (vi[p].size() == 1 && vi[p].back() == f){
-		return p;
-	}
-	vector<pii> leaf;
-	for (int son : vi[p]){
-		if (son == f)
-			continue;
-		leaf.pb(mp(pre_dfs(son, p, 0),son));
-	}
-	
-	if (root){
-		if (p == 3){
-			int t = 0;
-		}
-		for (int i = 0; i < leaf.size(); ++i){
-			edge[leaf[i].first].push_back(p);
-			edge[p].push_back(leaf[i].first);
-		
-				ans.push_back(Node(p, leaf[i].second, leaf[i].first));
-		}
-		return -1;
-	}
-	else{
-
-		if (p ==11){
-			int t = 0;
-		}
-
-		if (leaf.size() == 1){
-			if (p == 2){
-				int t = 0;
-			}
-			
-			ans.push_back(Node(p, leaf[0].second, leaf[0].first));
-			edge[p].push_back(leaf[0].first);
-			edge[leaf[0].first].push_back(p);
-			return leaf[0].second;
-		}
-		else{
-			if (p == 7){
-				int t = 0;
-			}
-			mark[f] = 1;
-			ans.push_back(Node(f, p, leaf.back().first));
-			int nowf = leaf.back().second;
-			int nowp = p;
-			for (int i = leaf.size() - 2; i >= 0; --i){
-				ans.push_back(Node(nowf, nowp, leaf[i].first));
-
-				edge[leaf[i].first].push_back(nowf);
-				edge[nowf].push_back(leaf[i].first);
-				nowf = leaf[i].second;
-				nowp = p;
-
-			}
-			edge[p].push_back(nowf);
-			edge[nowf].push_back(p);
-		}
-		return leaf.back().first;
-	}
-}
-
+unordered_set<int> S[200010];
+unordered_set<int> ORIGIN[200010];
+int degree[200010];
 
 void input(){
 	in >> n;
+//	scanf("%d", &n);
 	for (int i = 1; i < n; ++i){
 		int a, b;
 		in >> a >> b;
-		vi[a].pb(b);
-		vi[b].pb(a);
+	//	scanf("%d%d", &a, &b);
+		S[a].insert(b);
+		S[b].insert(a);
+		ORIGIN[a].insert(b);
+		ORIGIN[b].insert(a);
+		degree[a]++;
+		degree[b]++;
 	}
+
+
 }
-bool ok[MMAX];
-int roota, rootb;
-int get_root(int p,int f){
-	int size = 1;
-	for (int son : vi[p]){
+
+
+
+
+
+bool mark[200010];
+int dfs(int p,int f){
+	int num = 0;
+	for (int son : S[p]){
 		if (son == f)
 			continue;
-		int tmp = get_root(son, p);
-		if (tmp < n - tmp){
-			ok[son] = 1;
-		}
+		int ret = dfs(son, p);
 
-		if ( n - tmp < tmp){
-			ok[p] = 1;
+		int X = n - ret;
+		if (X > ret){
+			mark[son] = 1;
 		}
-
-		size += tmp;
+		else if (X < ret){
+			mark[p] = 1;
+		}
+		
+		num += ret;
 	}
 	
-	
-	return size;
+	return num + 1;
+}
+
+int a[400010], b[400010], c[400010], NUM;
+
+void add(int x, int y1, int y2){
+	a[NUM] = x;
+	b[NUM] = y1;
+	c[NUM] = y2;
+	NUM++;
 }
 
 
+inline void add_edge(int a,int b){
+	S[a].insert(b);
+	S[b].insert(a);
+}
 
+inline void del_edge(int a,int b){
+	S[a].erase(b);
+	S[b].erase(a);
+}
+
+pii update(int p,int f){
+	if (p == 9){
+		int t = 0;
+	}
+	vector<pii> leaf;
+	for (int son : ORIGIN[p]){
+		if (son == f)
+			continue;
+		pii ll = update(son, p);
+		leaf.push_back(ll);
+	}
+	if (leaf.empty()){
+		return mp(p,p);
+	}
+	else {
+		int F = f;
+		int sss = -1;
+		while (leaf.size() > 1){
+			int down = leaf.back().first;
+			int up = leaf.back().second;
+			add(F, p, down);
+			add_edge(F, down);
+			del_edge(F, p);
+			F = up;
+			if (sss == -1){
+				sss = down;
+			}
+			leaf.pop_back();
+		}
+		if (sss == -1)
+			sss = p;
+		return mp(leaf.back().first,sss);
+	}
+}
+
+
+int arr[200010], len;
+void get(int p,int f){
+	//cout << p << " " << f << endl;
+	if (S[p].size() > 2){
+		int t = 0;
+	}
+	for (int son : S[p]){
+		if (son == f){
+			continue;
+		}
+		get(son, p);
+	}
+	arr[len++] = p;
+//	cout << len << endl;
+}
+
+
+int rrr(int a, int b){
+	int lll = b - a + 1;
+	int rr = abs(rand()) % lll;
+	return a + rr;
+
+}
+
+void general(int n){
+	ofstream out("C:\\input.txt");
+	srand(time(0));
+	out << n << endl;
+	for (int i = 2; i <= n; ++i){
+		out << i << " " << rrr(1, i - 1) << endl;
+	}
+	out.close();
+}
 
 int main(){
+
+	//general(20);
+	
+
 
 	int TEST_CASE = 1;
 	//in >> TEST_CASE;
 	while (TEST_CASE-- > 0){
 		input();
-		if (n <= 3){
-			cout << 0 << endl;
-			continue;
-		}
-		roota = rootb = -1;
 
-		get_root(1, -1);
-		vector<int> vp;
-		for (int i = 1; i <= n;++i)
-		if (!ok[i])
-			vp.push_back(i);
-		
-		assert(vp.size() <= 2);
-
-		roota = vp[0];
-		if (vp.size() == 2){
-			rootb = vp.back();
-		}
-		
-
-		pre_dfs(roota, rootb, 1);
-		if (rootb != -1){
-			pre_dfs(rootb, roota, 1);
-		}
-		
-
-		dfs(roota, -1);
-		if (rootb != -1){
-			dfs(rootb, -1);
+		NUM = 0;
+		int root = -1;
+		for (int i = 1; i <= n; ++i){
+			if (degree[i] == 1){
+				root = i;
+				break;
+			}
 		}
 
-		printf("%d\n", ans.size());
-		for (Node& p : ans){
-			printf("%d %d %d\n", p.x, p.y1, p.y2);
+		dfs(root, -1);
+		vector<int> boss;
+		for (int i = 1; i <= n; ++i){
+			if (!mark[i]){
+				boss.push_back(i);
+			}
 		}
 
+		if (boss.size()==2){
+			int p1 = boss[0];
+			int p2 = boss[1];
+			del_edge(p1, p2);
+			ORIGIN[p1].erase(p2);
+			ORIGIN[p2].erase(p1);
+		}
+
+		for (int R : boss){
+			for (int son : ORIGIN[R]){
+			//	cout << R << "　" << son << endl;
+				update(son, R);
+			}
+		}
+
+		for (int R : boss){
+			
+			for (int son : S[R]){
+				len = 0;
+				get(son, R);
+	//			cout << endl;
+				arr[len++] = R;
+				for (int k = 3; k < len; ++k){
+					add(arr[k], arr[k - 1], arr[1]);
+				}
+			}
+		}
+
+		printf("%d\n", NUM);
+		for (int k = 0; k < NUM; ++k){
+			printf("%d %d %d\n", a[k], b[k], c[k]);
+		}
 
 
 
