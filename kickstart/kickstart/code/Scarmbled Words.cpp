@@ -50,30 +50,25 @@ void input(){
 
 
 bool mark[26];
-int M[10000010];
-//unordered_map<LL,int> M;
+unordered_map<LL,int> M;
 
 
 void Init(){
 	for (int i = 0; i < 26; ++i){
 		mark[i] = 0;
 	}
-	memset(M, 0, sizeof(M));
-//	M.clear();
+	M.clear();
 
 }
 
 
-LL mod = (LL)1e7 + 7, seed = 64757639,seedhead = 78654391,seedbody=34567821;
+LL mod = (LL)1e9 + 7, seed = 64757639, seedhead = 78654391, seedbody = 34567821;
 LL Hash(int st,int en,int z[26]){
 	//LL head = (st * seedhead % mod * seed % mod + en)*seedhead % mod*seed%mod;
 	LL head = ((st * seedhead +en)% mod )*seedhead % mod;
 	LL body = 0;
 	for (int i = 0; i < 26; ++i){
-	//	for (int j = 1; j <= z[i]; ++j){
-			body = (body * seed + (i + 97) * z[i]) % mod;
-	//	}
-	//	body = body * seedbody % mod;
+		body = ((body * seed + (i + 97) * z[i] % mod * seedbody % mod)) % mod;
 	}
 	return head * body % mod;
 }
@@ -141,8 +136,10 @@ int main(){
 				LL h = Hash(str[sl], str[sr], tmp);
 			//	tmp[str[sl] - 'a']++;
 				tmp[str[sr] - 'a']++;
-				ans += M[h];
-				M[h] = 0;
+				if (M.count(h)){
+					ans += M[h];
+					M.erase(h);
+				}
 				
 			//	tmp[str[sl] - 'a']--;
 				sl++;
