@@ -50,7 +50,7 @@ void input(){
 
 
 bool mark[26];
-unordered_map<LL,int> M;
+unordered_map<int,int> M;
 
 
 void Init(){
@@ -63,7 +63,7 @@ void Init(){
 
 
 LL mod = (LL)1e9 + 7, seed = 64757639, seedhead = 78654391, seedbody = 34567821;
-LL Hash(int st,int en,int z[26]){
+int Hash(int st,int en,int z[26]){
 	//LL head = (st * seedhead % mod * seed % mod + en)*seedhead % mod*seed%mod;
 	LL head = ((st * seedhead +en)% mod )*seedhead % mod;
 	LL body = 0;
@@ -118,7 +118,7 @@ int main(){
 				tt[t[i] - 'a']++;
 			}
 			DS.insert(t.length());
-			LL HH = Hash(t[0], t.back(), tt);
+			int HH = Hash(t[0], t.back(), tt);
 			M[HH]++;
 		}
 
@@ -127,13 +127,16 @@ int main(){
 			memset(tmp, 0, sizeof(tmp));
 			int sl = 1;
 			int sr = k;
+			if (sr > N){
+				continue;
+			}
 			for (int i = sl; i <= sr; ++i){
 				tmp[str[i] - 'a']++;
 			}
 			while (sr <= N){
 				tmp[str[sl] - 'a']--;
 				tmp[str[sr] - 'a']--;
-				LL h = Hash(str[sl], str[sr], tmp);
+				int h = Hash(str[sl], str[sr], tmp);
 			//	tmp[str[sl] - 'a']++;
 				tmp[str[sr] - 'a']++;
 				if (M.count(h)){
