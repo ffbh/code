@@ -39,9 +39,9 @@ pii a[30010];
 
 void input(){
 	in >> N >> Q;
-	for (int i = 1; i <= Q; ++i)
+	for (int i = 1; i <= Q; ++i){
 		in >> a[i].first >> a[i].second;
-
+	}
 }
 
 inline int book(int limit,int end){
@@ -55,54 +55,68 @@ inline int get_union(pii a,pii b){
 	return max(0, y - x + 1);
 }
 
+
+
 bool ok(int m){
 	
 
 	map<pii, int> M;
-	M.insert(mp(mp(1, N), N));
+	int line = -1;
 	for (int i = 1; i <= Q; ++i){
-
-		if (m == 3 && i ==3){
-			int t = 0;
-		}
 		int L = a[i].first;
 		int R = a[i].second;
-		vector<map<pii, int>::iterator> del;
-		map<pii, int>::iterator ptr = M.upper_bound(mp(a[i].first, a[i].first));
-		if (ptr != M.begin()){
-			ptr--;
-		}
-		int block = 0;
-		map<pii, int>::iterator first = ptr;
-		map<pii, int>::iterator last = ptr;
-		while (ptr != M.end() && ptr->first.first <= R){
-			int uu = get_union(ptr->first, a[i]);
-			if (uu <= ptr->second){
-				int free_block = min(ptr->second, uu);
-				block += free_block;
-				del.push_back(ptr);
-				last = ptr;
-				last->second -= free_block;
+		while (L - 1 > line && !M.empty()){
+			if (M.begin()->first.first < L){
+				int e = M.begin()->first.first;
+				assert(e >= line);
+				M.begin()->second += e - line;
+				line = e;
+				if (M.begin()->second < m){
+					return 0;
+				}
+				M.erase(M.begin());
 			}
-			ptr++;
+			else{
+				assert(L - 1 >= line);
+				M.begin()->second += L - 1 - line;
+				line = L - 1;
+				break;
+			}
 		}
-
-		pair<pii, int> FIRST = mp(mp(first->first.first, first->first.second), first->second);
-		FIRST.first.second = L - 1;
-		pair<pii, int> LAST = mp(mp(last->first.first,last->first.second), last->second);
-		LAST.first.first = R + 1;
-		
-		if (block < m)
+		line = L - 1;
+		M.insert(mp(mp(R, i), 0));
+		//while (!M.empty() /*&& M.begin()->first.first < R*/ && M.begin()->second >= m){
+		//	M.erase(M.begin());
+		//}
+	/*	auto it = M.lower_bound(mp(R, i));
+		if (it == M.begin())
+			continue;
+		--it;
+		while (1) {
+			if (it->second >= m) {
+				if (it == M.begin()) {
+					M.erase(it);
+					break;
+				}
+				else {
+					auto bef = it;
+					--it;
+					M.erase(bef);
+				}
+			}
+			else
+				break;
+		}*/
+	}
+	while (!M.empty()){
+		int e = M.begin()->first.first;
+		assert(e >= line);
+		M.begin()->second += e - line;
+		line = e;
+		if (M.begin()->second < m){
 			return 0;
-		for (auto ppp : del){
-			M.erase(ppp);
 		}
-		M[a[i]] = block - m;
-		if (FIRST.first.first <= FIRST.first.second)
-			M[FIRST.first] = FIRST.second;
-		if (LAST.first.first <= LAST.first.second)
-			M[LAST.first] = LAST.second;
-
+		M.erase(M.begin());
 	}
 	return 1;
 }
@@ -125,7 +139,7 @@ int main(){
 	while (TEST_CASE-- > 0){
 		input();
 
-		sort(a + 1, a + Q + 1, cmp);
+		sort(a + 1, a + Q + 1);
 		int ans = 0;
 		
 	
