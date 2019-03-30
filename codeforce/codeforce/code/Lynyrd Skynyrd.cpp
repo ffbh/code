@@ -144,8 +144,12 @@ bool cmp(pair<pii, int> p1, pair<pii, int> p2){
 vector<int> path;
 bool vis[200010];
 void dfs(int p){
+	if (p == 3){
+		int t = 0;
+	}
 	if (vis[p])
 		return;
+	vis[p] = 1;
 	path.push_back(p);
 	if (path.size() >= n){
 		E[p] = path[path.size() - n];
@@ -189,7 +193,10 @@ int main(){
 			}
 		}
 
-		for (int i = 1; i <= m; ++i){
+		for (int i = m; i >= 1; --i){
+			if (i == 3){
+				int t = 0;
+			}
 			dfs(i);
 			//for (int j = 0;j+n-1<(int)ret.size(); ++j){
 			//	int k = j + n - 1;
