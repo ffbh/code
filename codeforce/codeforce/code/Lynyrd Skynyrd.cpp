@@ -38,7 +38,7 @@ typedef long long LL;
 int n, m, q;
 int a[200010];
 int b[200010];
-pii Q[200010];
+pair<pii,int> Q[200010];
 
 inline int get_ne(int _p){
 	if (_p == n){
@@ -72,12 +72,13 @@ void input(){
 	}
 
 	for (int i = 1; i <= q; ++i){
-		in >> Q[i].first >> Q[i].second;
+		in >> Q[i].first.first >> Q[i].first.second;
+		Q[i].second = i - 1;
 	}
 
 }
 
-int edge[200010];
+vector<int> edge[200010];
 
 //inline void del_edge(int p){
 //	int _a = ppp[p];
@@ -87,22 +88,73 @@ int edge[200010];
 //
 //}
 
-bool vis[200010];
+int dp[200010];
 vector<int> ret;
-void cale(int pos){
-	ret.clear();
-	while (pos != -1){
-		vis[pos] = 1;
-		ret.push_back(pos);
-		if (edge[pos] == pos)
-			break;
-		pos = edge[pos];
-	}
-}
+//void cale(int pos){
+//	ret.clear();
+//	while (pos != -1){
+//		vis[pos] = 1;
+//		ret.push_back(pos);
+//		if (edge[pos] == pos)
+//			break;
+//		pos = edge[pos];
+//	}
+//}
 
 int h[200010];
 
 int E[200010];
+
+
+//int dfs(int pos,int aim,int RRR){
+//	if (pos == -1){
+//		E[RRR] = 1e7;
+//		return -1;
+//	}
+//	if (dp[pos] != -1){
+//		pos = dp[pos];
+//	}
+//	if (b[pos] == aim){
+//		E[RRR] = pos;
+//		return pos;
+//	}
+//	else{
+//		int ret = dfs(edge[pos], aim,RRR);
+//		if (ret == -1){
+//			return pos;
+//		}
+//		else{
+//			dp[pos] = ret;
+//			return ret;
+//		}
+//	}
+//}
+
+
+bool cmp(pair<pii, int> p1, pair<pii, int> p2){
+	if (p1.first.first != p2.first.first)
+		return p1.first.first > p2.first.first;
+	else if (p1.first.second != p2.first.second)
+		return p1.first.second > p2.first.second;
+	else{
+		return p1.second < p2.second;
+	}
+}
+
+vector<int> path;
+bool vis[200010];
+void dfs(int p){
+	if (vis[p])
+		return;
+	path.push_back(p);
+	if (path.size() >= n){
+		E[p] = path[path.size() - n];
+	}
+	for (int son : edge[p]){
+		dfs(son);
+	}
+	path.pop_back();
+}
 
 int main(){
 
@@ -115,14 +167,15 @@ int main(){
 		input();
 
 		for (int i = 1; i <= m; ++i){
-			edge[i] = -1;
+			edge[i].clear();
 		//	ppp[i] = i - 1;
 			E[i] = 1e7;
+			dp[i] = -1;
 		}
 
 		for (int i = 1; i <= n; ++i){
 			ne[a[i]] = a[get_ne(i)];
-//			pe[a[i]] = a[get_pe(i)];
+			pe[a[i]] = a[get_pe(i)];
 			
 		}
 
@@ -131,39 +184,41 @@ int main(){
 			h[b[i]] = i;
 			int pp = ne[b[i]];
 			if(h[pp]){
-				edge[i] = h[pp];
-				h[pp] = 0;
+				edge[h[pp]].push_back(i);
+	//			edge[i] = h[pp];
 			}
 		}
 
 		for (int i = 1; i <= m; ++i){
-			if (vis[i])
-				continue;
-			cale(i);
-			for (int j = 0;j+n-1<(int)ret.size(); ++j){
-				int k = j + n - 1;
-				E[ret[j]] = ret[k];
-			}
+			dfs(i);
+			//for (int j = 0;j+n-1<(int)ret.size(); ++j){
+			//	int k = j + n - 1;
+			//	E[ret[j]] = ret[k];
+			//}
 		}
 
 		
 
-		sort(Q + 1, Q + n + 1);
-	//	int mmax = 0;
+		sort(Q + 1, Q + q + 1,cmp);
+
+		string ans(q, '0');
+		int pos = m + 1;
+		int mmin = 1e7;
 		for (int i = 1; i <= q; ++i){
-			int l = Q[i].first;
-			int r = Q[i].second;
-		//	mmax = max(mmax, E[l]);
-			if ( E[l] <= r){
-				cout << "1";
+			int l = Q[i].first.first;
+			int r = Q[i].first.second;
+			int Index = Q[i].second;
+			while (pos > l){
+				pos--;
+				mmin = min(mmin, E[pos]);
 			}
-			else{
-				cout << "0";
+			if (r >= mmin){
+				ans[Index] = '1';
 			}
 		}
 
 	
-		cout << endl;
+		cout << ans<<endl;
 
 
 
