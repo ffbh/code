@@ -126,11 +126,11 @@ int main(){
 
 		fflush(stdin);
 		fflush(stdout);
-		/*	cout << query << endl;
+			cout << query << endl;
 		fflush(stdin);
 		fflush(stdout);
-		in >> ans;*/
-		ans = ppp(query);
+		in >> ans;
+	//	ans = ppp(query);
 		ans += tail;
 		fflush(stdin);
 		fflush(stdout);
@@ -162,11 +162,11 @@ int main(){
 
 			fflush(stdin);
 			fflush(stdout);
-			/*	cout << query << endl;
+				cout << query << endl;
 				fflush(stdin);
 				fflush(stdout);
-				in >> ans;*/
-			ans = ppp(query);
+				in >> ans;
+		//	ans = ppp(query);
 			ans += tail;
 			fflush(stdin);
 			fflush(stdout);
