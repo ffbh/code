@@ -17,7 +17,7 @@ public class Solution {
         Scanner in = new Scanner(System.in);
      int T = in.nextInt();
      for(int t=1;t<=T;++t) {
-    	 int N = in.nextInt();
+    	 BigInteger N = in.nextBigInteger();
     	 int L = in.nextInt();
     	 BigInteger[] a = new BigInteger[L];
     	 for(int i=0;i<L;++i) {
