@@ -70,7 +70,7 @@ int main(){
 		for (int i = 1; i <= n;++i)
 		for (int j = 1; j <= m; ++j){
 			if (c[i][j] == 0){
-				ans[i][j] == 0;
+				ans[i][j] = 0;
 			}
 			else{
 				ans[i][j] = min(b[i], a[j]);
