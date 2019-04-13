@@ -18,6 +18,8 @@
 #include <cassert>
 using namespace std;
 
+
+
 #ifndef ONLINE_JUDGE
 ifstream in("C:\\input.txt");
 #endif
@@ -25,6 +27,7 @@ ifstream in("C:\\input.txt");
 #ifdef ONLINE_JUDGE
 istream& in = cin;
 #endif
+
 
 
 typedef long long LL;
@@ -47,90 +50,76 @@ void input(){
 
 }
 
-bool ans[7][1000310];
-bool ooo[1000310];
-int a[20];
-int v[20];
+int f[10];
 
+int V = 2;
 
-
-int prime[7] = { 2, 3, 5, 7, 11, 13, 17 };
+int prime[7] = {18,17,16,15,14,13,11 };
 
 int main(){
 
 	int TEST_CASE = 1;
-	in >> TEST_CASE;
+	in >> TEST_CASE >> N >> M;
 	while (TEST_CASE-- > 0){
-		input();
+		/*input();*/
 
-		for (int i = 0; i < 1000310; ++i)
-			ans[0][i] = 1;
 
-	//	srand(time(0));
-		for (int i = 1; i <= 7; ++i){
+		//	for (int KKK = 1; KKK <= 100; ++KKK){
+		//	V = KKK;
+		int mmax = 0;
+		for (int i = 0; i < 7; ++i){
 			fflush(stdin);
 			fflush(stdout);
-			set<int> P;
-			P.insert(0);
+			string str = "";
 			for (int j = 1; j <= 18; ++j){
-			//	srand(time(0));
-			//	int vv = abs(rand()) % 17;
-				a[j] = prime[i - 1];
-				cout << a[j] << " ";
-				P.insert(a[j]);
+				str += to_string(prime[i]);
+				str += " ";
 			}
-			cout << endl;
-			fflush(stdin);
-			fflush(stdout);
-			for (int j = 1; j <= 18; ++j){
-				in >> v[j];
-				
-			}
+			cout << str << endl;
 			fflush(stdin);
 			fflush(stdout);
 			int sum = 0;
 			for (int j = 1; j <= 18; ++j){
-				int k = v[j];
-			//	k = (a[j] - k) % a[j];
-				sum += k;
-			}
-			memset(ooo, 0, sizeof(ooo));
-			ooo[0] = 1;
-			for (int k = 0; k <= M; ++k){
-				if (ooo[k]){
-					for (int p : P){
-						ooo[k + p] = 1;
-					}
+				int ttt;
+				in >> ttt;
+				sum += ttt;
+				}
+	//		sum = V % prime[i];
+
+			fflush(stdin);
+			fflush(stdout);
+			mmax = max(mmax, sum);
+			f[i] = sum%prime[i];
+
+
+		}
+		int ans;
+		for (int i = mmax; i <= M; ++i){
+			bool ok = 1;
+			for (int k = 0; k < 7; ++k){
+				if (i % prime[k] != f[k] % prime[k]){
+					ok = 0;
+					break;
 				}
 			}
-			for (int k = 0; k <= M; ++k){
-				if (ans[i - 1][k] && ooo[k])
-					ans[i][k] = 1;
-			}
-			
-		}
-
-		int num = 0;
-		for (int i = 1; i <= M; ++i){
-			if (ans[7][i]){
-				fflush(stdin);
-				fflush(stdout);
-				cout << i << endl;
-				fflush(stdin);
-				fflush(stdout);
-				num++;
+			if (ok){
+				ans = i;
+				break;
 			}
 		}
-
-	//	assert(num == 1);
+		fflush(stdin);
+		fflush(stdout);
+		//	assert(ans == KKK);
+		cout << ans << endl;
 		fflush(stdin);
 		fflush(stdout);
 		int cost;
 		in >> cost;
+		//	assert(cost == 1);
 		fflush(stdin);
 		fflush(stdout);
 
-
+		//	}
 	}
 
 
