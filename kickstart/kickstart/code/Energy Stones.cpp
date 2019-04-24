@@ -49,7 +49,7 @@ void input(){
 		V.push_back(D);
 	}
 }
-int dp[10010];
+int dp[20010];
 void _init(){
 
 	V.clear();
@@ -59,7 +59,7 @@ void _init(){
 
 int Lose(pair<int, pii> p1, pair<int, pii> p2){
 	int lose = p2.second.first * p1.first;
-	return min(lose, p1.second.second);
+	return lose;
 }
 
 bool cmp(pair<int, pii> p1 , pair<int, pii> p2){
@@ -97,26 +97,18 @@ int main(){
 		int ans = 0;
 		sort(V.begin(), V.end(), cmp);
 		for (auto p : V){
-			for (int k = 10009; k >= p.second.first; --k){
+			for (int k = 11009; k >= p.second.first; --k){
 				int time = k - p.second.first;
 				int v = p.second.second - time * p.first;
-				if (v < 0)
+				if (v <= 0){
 					v = 0;
+					continue;
+				}
 				dp[k] = max(dp[k], dp[time] + v);
 				ans = max(ans, dp[k]);
 			}
 		}
 		
-		for (auto p : V){
-			for (int k = 10009; k >= p.second.first; --k){
-				int time = k - p.second.first;
-				int v = p.second.second - time * p.first;
-				if (v < 0)
-					v = 0;
-				dp[k] = max(dp[k], dp[time] + v);
-				ans = max(ans, dp[k]);
-			}
-		}
 
 		printf("Case #%d: %d\n",CPP++, ans);
 
