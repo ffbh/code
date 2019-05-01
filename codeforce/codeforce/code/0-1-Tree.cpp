@@ -56,42 +56,45 @@ void input(){
 
 LL ans;
 
-inline pair<int, pii> add_edge(pair<int, pii> v ,int edge){
+inline pair<pii, pii> add_edge(pair<pii, pii> v ,int edge){ //01,10
 	if (edge == 0){
-		return mp(v.first + 1, mp(0, 0));
+		return mp(mp(0, 0), mp(v.second.first + v.first.second, v.second.second + 1));
 	}
 	else{
-		return mp(0, mp(v.first + v.second.first, v.second.second + 1));
+		return mp(mp(v.first.first + v.second.second, v.first.second + 1), mp(0, 0));
 	}
 }
 
-pair<int, pii> dfs(int p, pair<int, pii> v, int f,int edge){
+pair<pii, pii> dfs(int p, pair<pii, pii> v, int f,int edge){
 
-	pair<int, pii> RET = mp(0, mp(0, 0));
+	pair<pii, pii> RET = mp(mp(0,0), mp(0, 0));
 	for (pii son : V[p]){
 		if (son.first == f){
 			continue;
 		}
-		pair<int, pii> ret;
-		pair<int, pii> vv = add_edge(v, son.second);
+		pair<pii, pii> ret;
+		pair<pii, pii> vv = add_edge(v, son.second);
 		if (son.second == 0){
-			ans += v.second.second;
-			ans += (LL)2 * v.first;
 			ans += 2;
+			ans += v.second.second * 2;
+			ans += v.second.first;
+			ans += v.first.second;
 			ret = dfs(son.first, vv, p, 0);
 		}
 		else{
-			ans += v.first;
-			ans += v.second.first;
-			ans += (LL)2 * v.second.second;
 			ans += 2;
+			ans += v.first.second * 2;
+			ans += v.first.first;
+			ans += v.second.second;
 			ret = dfs(son.first, vv, p, 1);
 		}
-		v.first += ret.first;
+		v.first.first += ret.first.first;
+		v.first.second += ret.first.second;
 		v.second.first += ret.second.first;
 		v.second.second += ret.second.second;
 
-		RET.first += ret.first;
+		RET.first.first += ret.first.first;
+		RET.first.second += ret.first.second;
 		RET.second.first += ret.second.first;
 		RET.second.second += ret.second.second;
 	}
@@ -115,7 +118,7 @@ int main(){
 		input();
 
 		ans = 0;
-		dfs(1, mp(0,mp(0,0)), -1,0);
+		dfs(1, mp(mp(0,0),mp(0,0)), -1,0);
 
 		cout << ans << endl;
 
