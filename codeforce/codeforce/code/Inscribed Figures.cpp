@@ -100,7 +100,7 @@ int main(){
 			}
 		}
 
-		if (ans == -1){
+		if (ans <= -1){
 			cout << "Infinite" << endl;
 		}
 		else{
