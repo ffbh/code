@@ -108,7 +108,7 @@ int main(){
 		_init();
 		input();
 
-		memset(mark, -1, sizeof(mark));
+	
 
 		set<string> S;
 		
@@ -116,13 +116,14 @@ int main(){
 
 
 		while (1){
-
+			memset(mark, -1, sizeof(mark));
 			ans.clear();
 			S.clear();
 			S.insert("res");
+			bool modify = 0;
 			for (int k = str.size() - 1; k >= 0; --k){
 				paste(k);
-
+				
 				if (S.count(a[k])){
 					if (c[k] == ""){
 						if (a[k] == b[k])
@@ -166,18 +167,37 @@ int main(){
 						S.insert(c[k]);
 					}
 				}
+				
 			}
 			
+			modify = str.size() != ans.size();
+
 			if (str.size() == 2){
 				int t = 0;
 			}
 
-			if (ans.size() == str.size()){
-				break;
-			}
+
 			str = ans;
 			reverse(str.begin(), str.end());
-		
+			for (int i = 0; i < str.size(); ++i){
+				paste(i);
+				for (int j = i - 1; j >= 0; --j){
+					if (a[j] == b[i] || a[j] == c[i])
+						break;
+					if (OP[j] == OP[i] && b[j] == b[i] && c[j] == c[i]){
+						str[i] = a[i] + "=" + a[j];
+						modify = 1;
+						break;
+					}
+				}
+			}
+
+			if ( !modify){
+				break;
+			}
+			int t = 0;
+			t++;
+
 		}
 		cout << ans.size() << endl;
 		for (int i = (int)ans.size() - 1; i >= 0; --i){
