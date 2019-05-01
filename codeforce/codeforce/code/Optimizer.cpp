@@ -42,7 +42,7 @@ void _init(){
 }
 
 int n;
-string str[1010];
+vector<string> str;
 
 string a[1010], b[1010], c[1010];
 char OP[1010];
@@ -76,8 +76,11 @@ void paste(int k){
 
 void input(){
 	in >> n;
-	for (int i = 1; i <= n; ++i)
-		in >> str[i];
+	for (int i = 1; i <= n; ++i){
+		string s;
+		in >> s;
+		str.push_back(s);
+	}
 }
 
 int mark[1010];
@@ -108,47 +111,74 @@ int main(){
 		memset(mark, -1, sizeof(mark));
 
 		set<string> S;
-		S.insert("res");
+		
 		vector<string> ans;
 
 
+		while (1){
 
-		for (int k = n; k >= 1; --k){
-			paste(k);
+			ans.clear();
+			S.clear();
+			S.insert("res");
+			for (int k = str.size() - 1; k >= 0; --k){
+				paste(k);
 
-			if (S.count(a[k])){
-				if (c[k] == ""){
-					for (int i = k + 1; i <= n; ++i){
-						if (mark[i] == -1)
+				if (S.count(a[k])){
+					if (c[k] == ""){
+						if (a[k] == b[k])
 							continue;
-						bool ok = 0;
-						if (a[i] == a[k]){
-							ok = 1;
-							a[i] = b[k];
+						if (ans.empty()){
+							mark[k] = ans.size();
+							ans.push_back(str[k]);
+							S.erase(a[k]);
+							S.insert(b[k]);
+							continue;
 						}
-						if (b[i] == a[k]){
-							ok = 1;
-							b[i] = b[k];
-						}
-						if (c[i] == a[k]){
-							ok = 1;
-							c[i] = b[k];
-						}
-						if (ok){
-							ans[mark[i]] = Get(i);
+
+						S.erase(a[k]);
+						S.insert(b[k]);
+						for (int i = k + 1; i <= n; ++i){
+							if (mark[i] == -1)
+								continue;
+							bool ok = 0;
+							if (a[i] == a[k]){
+								ok = 1;
+								a[i] = b[k];
+							}
+							if (b[i] == a[k]){
+								ok = 1;
+								b[i] = b[k];
+							}
+							if (c[i] == a[k]){
+								ok = 1;
+								c[i] = b[k];
+							}
+							if (ok){
+								ans[mark[i]] = Get(i);
+							}
 						}
 					}
-				}
-				else{
-					mark[k] = ans.size();
-					ans.push_back(str[k]);
-					S.erase(a[k]);
-					S.insert(b[k]);
-					S.insert(c[k]);
+					else{
+						mark[k] = ans.size();
+						ans.push_back(str[k]);
+						S.erase(a[k]);
+						S.insert(b[k]);
+						S.insert(c[k]);
+					}
 				}
 			}
-		}
+			
+			if (str.size() == 2){
+				int t = 0;
+			}
 
+			if (ans.size() == str.size()){
+				break;
+			}
+			str = ans;
+			reverse(str.begin(), str.end());
+		
+		}
 		cout << ans.size() << endl;
 		for (int i = (int)ans.size() - 1; i >= 0; --i){
 			cout << ans[i] << endl;
