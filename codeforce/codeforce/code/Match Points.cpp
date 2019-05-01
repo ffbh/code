@@ -41,14 +41,41 @@ void _init(){
 
 }
 
-int n;
-int a[110];
-
+LL n,z;
+LL a[200010];
+bool vis[200010];
 void input(){
-	in >> n;
+	in >> n >> z;
 	for (int i = 1; i <= n; ++i){
 		in >> a[i];
 	}
+
+
+}
+
+
+bool ok(int mid){
+	memset(vis, 0, sizeof(vis));
+	int L = 1, R = mid + 1;
+	int ans = 0;;
+	while (R <= n){
+		while (vis[L]){
+			L++;
+		}
+		while (R <= L){
+			R++;
+		}
+		if (R > n)
+			break;
+		if (a[R] - a[L] >= z){
+			assert(!vis[L] && !vis[R]);
+			ans++;
+			vis[L] = vis[R] = 1;
+		}
+		R++;
+	}
+	return ans >= mid;
+
 
 
 }
@@ -62,54 +89,25 @@ int main(){
 		_init();
 		input();
 
+
+		sort(a + 1, a + n + 1);
+
+		
+		int L = 1;
+		int R = n;
 		int ans = 0;
-		for (int i = 1; i < n; ++i){
-			if (a[i] == 1){
-				if (a[i + 1] == 2){
-					ans += 3;
-				}
-				else{
-					ans += 4;
-				}
-			}
-			else if (a[i] == 2){
-				if (a[i + 1] == 1){
-					ans += 3;
-				}
-				else{
-					ans = -1;
-					break;
-				}
+		while (L <= R){
+			int m = (L + R) / 2;
+			if (ok(m)){
+				ans = m;
+				L = m + 1;
 			}
 			else{
-				if (a[i + 1] == 1){
-					ans += 4;
-				}
-				else{
-					ans = -1;
-					break;
-				}
-
-			}
-
-		}
-
-		for (int k = 3; k <= n; ++k){
-			if (a[k] == 2 && a[k - 1] == 1 && a[k - 2] == 3){
-				ans--;
+				R = m - 1;
 			}
 		}
 
-		if (ans == -1){
-			cout << "Infinite" << endl;
-		}
-		else{
-			cout << "Finite" << endl;
-			cout << ans << endl;
-		}
-
-
-
+		cout << ans << endl;
 
 
 

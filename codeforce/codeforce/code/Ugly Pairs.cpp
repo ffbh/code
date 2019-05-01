@@ -80,7 +80,12 @@ int main(){
 				str += ('a' + v);
 			}
 		}
-		for (int i = 0; i < S.size(); i += 2){
+
+		int st = S.size() - 1;
+		if (st % 2 == 1){
+			st--;
+		}
+		for (int i = st; i >= 0; i -= 2){
 			int v = S[i];
 			for (int j = 1; j <= num[v]; ++j){
 				str += ('a' + v);
@@ -88,6 +93,34 @@ int main(){
 		}
 		bool ok = 1;
 		char pre = 0;
+		for (char c : str){
+			if (abs(c - pre) == 1){
+				ok = 0;
+				break;
+			}
+			pre = c;
+		}
+
+		if (!ok){
+			str = "";
+			for (int i = 1; i < S.size(); i += 2){
+				int v = S[i];
+				for (int j = 1; j <= num[v]; ++j){
+					str += ('a' + v);
+				}
+			}
+
+			for (int i = 0; i < S.size(); i += 2){
+				int v = S[i];
+				for (int j = 1; j <= num[v]; ++j){
+					str += ('a' + v);
+				}
+			}
+		}
+
+
+		ok = 1;
+		pre = 0;
 		for (char c : str){
 			if (abs(c - pre) == 1){
 				ok = 0;
