@@ -172,15 +172,12 @@ int main(){
 			
 			modify = str.size() != ans.size();
 
-			if (str.size() == 2){
-				int t = 0;
-			}
-
-
 			str = ans;
 			reverse(str.begin(), str.end());
 			for (int i = 0; i < str.size(); ++i){
 				paste(i);
+				if (c[i] == "")
+					continue;
 				for (int j = i - 1; j >= 0; --j){
 					if (a[j] == b[i] || a[j] == c[i])
 						break;
@@ -195,8 +192,7 @@ int main(){
 			if ( !modify){
 				break;
 			}
-			int t = 0;
-			t++;
+
 
 		}
 		cout << ans.size() << endl;
