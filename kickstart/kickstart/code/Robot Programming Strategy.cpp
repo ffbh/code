@@ -82,7 +82,7 @@ int main(){
 
 		int ok = -1;
 		string ans = "";
-		for (int p = 0; p < 130000; ++p){
+		for (int p = 0; p < 1030000; ++p){
 			set<char> SS;
 			for (int k = 1; k <= N; ++k){
 				if (!vis[k]){
@@ -125,52 +125,7 @@ int main(){
 			}
 		}
 
-		if (ok == -1){
-			for (int p = 0; p < 130000; ++p){
-				set<char> SS;
-				for (int k = 1; k <= N; ++k){
-					if (!vis[k]){
-						SS.insert(S[k][p % S[k].length()]);
-					}
-				}
-				if (SS.size() == 1){
-					ok = 1;
-					ans += rbeat[*(SS.begin())];
-					break;
-				}
-				else if (SS.size() == 2){
-					char c1 = *(SS.begin());
-					char c2 = *(--SS.end());
-					if (beat[c1] == c2){
-						ans += c1;
-						//SS.erase(c2);
-						for (int k = 1; k <= N; ++k){
-							if (S[k][p % S[k].length()] == c2){
-								vis[k] = 1;
-							}
-						}
-					}
-					else{
-						ans += c2;
-						//	SS.erase(c1);
-						for (int k = 1; k <= N; ++k){
-							if (S[k][p % S[k].length()] == c1){
-								vis[k] = 1;
-							}
-						}
-					}
-				}
-				else if (SS.size() == 3){
-					ok = 0;
-					break;
-				}
-				else{
-					//	assert(0);
-				}
-			}
-
-
-		}
+		
 		
 
 		printf("Case #%d: ", CPP++);
