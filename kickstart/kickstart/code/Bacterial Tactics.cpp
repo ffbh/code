@@ -40,17 +40,18 @@ typedef long long LL;
 
 int R, C;
 string M[16];
-int mark[70000];
+int dp[16][16][16][16];
+bool vvv[16][16];
 void input(){
 	in >> R >> C;
 	for (int i = 0; i < R; ++i)
 		in >> M[i];
-
+	
 }
 
 void _init(){
-	memset(mark, -1, sizeof(mark));
-
+	memset(dp, -1, sizeof(dp));
+	memset(vvv, 0, sizeof(vvv));
 
 }
 
@@ -105,82 +106,56 @@ inline bool can_put(int mask , int x,int y,char c){
 	return 1;
 }
 
+bool ok(int x1, int y1, int x2, int y2, int x, int y) {
+	if (x != -1) {
+		for (int k = y1; k <= y2; ++k) {
+			if (M[x][k] == '#')
+				return false;
+		}
+	}
+	else {
+		for (int k = x1; k <= x2; ++k) {
+			if (M[k][y] == '#')
+				return false;
+		}
+	}
+	return true;
+}
 
-inline int put(int mask, int x, int y, char c){
-	int MASK = mask;
-	int pp = x * C + y;
-	MASK += (1 << pp);
-	if (c == 'H'){
-		for (int k = y - 1; k >= 0; --k){
-			int pv = x * C + k;
-			if ((1 << pv) & mask){
-				break;
-			}
-			else{
-				MASK += (1 << pv);
+static int dfs(int x1, int y1, int x2, int y2) {
+	if (x1 > x2 || y1 > y2) {
+		return 0;
+	}
+	set<int> S;
+	if (dp[x1][y1][x2][y2] == -1) {
+		for (int i = x1; i <= x2; ++i) {
+			if (ok(x1, y1, x2, y2, i, -1)) {
+				int v1 = dfs(x1, y1, i - 1, y2);
+				int v2 = dfs(i + 1, y1, x2, y2);
+				S.insert(v1 ^ v2);
 			}
 		}
-		for (int k = y + 1; k < C; ++k){
-			int pv = x * C + k;
 
-			if ((1 << pv) & mask){
-				break;
+		for (int i = y1; i <= y2; ++i) {
+			if (ok(x1, y1, x2, y2, -1, i)) {
+				int v1 = dfs(x1, y1, x2, i - 1);
+				int v2 = dfs(x1, i + 1, x2, y2);
+				S.insert(v1 ^ v2);
 			}
-			else{
-				MASK += (1 << pv);
+		}
+
+		for (int k = 0;; ++k) {
+			if (!S.count(k)) {
+				dp[x1][y1][x2][y2] = k;
+				break;
 			}
 		}
 	}
-	else{
-		for (int k = x - 1; k >= 0; --k){
-			int pv = k * C + y;
-			if ((1 << pv) & mask){
-				break;
-			}
-			else{
-				MASK += (1 << pv);
-			}
-		}
-		for (int k = x + 1; k < R; ++k){
-			int pv = k * C + y;
-			if ((1 << pv) & mask){
-				break;
-			}
-			else{
-				MASK += (1 << pv);
-			}
-		}
-	}
-	return MASK;
+	return dp[x1][y1][x2][y2];
 }
 
 
-int dfs(int mask){
 
-	if (mark[mask] != -1){
-		return mark[mask];
-	}
-	mark[mask] = 0;
-	int MASK;
-	for (int i = 0; i < R && mark[mask] == 0; ++i)
-	for (int j = 0; j < C && mark[mask]==0; ++j){
-		if (can_put(mask, i, j, 'H')){
-			MASK = put(mask, i, j, 'H');
-			if (dfs(MASK) == 0){
-				mark[mask] = 1;
-			}
-		}
-
-		if (can_put(mask, i, j, 'V')){
-			MASK = put(mask, i, j, 'V');
-			if (dfs(MASK) == 0){
-				mark[mask] = 1;
-			}
-		}
-	}
-
-	return mark[mask];
-}
 
 int main(){
 
@@ -192,23 +167,30 @@ int main(){
 		_init();
 		input();
 
+		
 		int ans = 0;
-		for (int i = 0; i < R ; ++i)
-		for (int j = 0; j < C; ++j){
-			if (can_put(0, i, j, 'H')){
-				int MASK = put(0, i, j, 'H');
-				if (dfs(MASK) == 0){
-					ans++;
-				}
-			}
 
-			if (can_put(0, i, j, 'V')){
-				int MASK = put(0, i, j, 'V');
-				if (dfs(MASK) == 0){
-					ans++;
+		for (int i = 0; i < R; ++i) {
+			if (ok(0, 0, R - 1, C - 1, i, -1)) {
+				int v1 = dfs(0, 0, i - 1, C - 1);
+				int v2 = dfs(i + 1, 0, R - 1, C - 1);
+				if (v1 == v2){
+					ans += C;
 				}
 			}
 		}
+
+		for (int i = 0; i < C; ++i) {
+			if (ok(0, 0, R - 1, C - 1, -1, i)) {
+				int v1 = dfs(0, 0, R - 1, i - 1);
+				int v2 = dfs(0, i + 1, R - 1, C - 1);
+				if (v1 == v2) {
+					ans += R;
+				}
+			}
+		}
+
+		
 
 		printf("Case #%d: %d\n", CPP++, ans);
 
