@@ -55,56 +55,6 @@ void _init(){
 
 }
 
-inline bool can_put(int mask , int x,int y,char c){
-	if (M[x][y] == '#')
-		return 0;
-	int pp = x * C + y;
-	if ((1 << pp) & mask){
-		return 0;
-	}
-	if (c == 'H'){
-		for (int k = y - 1; k >= 0; --k){
-			int pv = x * C + k;
-			if (M[x][k] == '#'){
-				return 0;
-			}
-			else if ((1 << pv) & mask){
-				break;
-			}
-		}
-		for (int k = y + 1; k < C; ++k){
-			int pv = x * C + k;
-			if (M[x][k] == '#'){
-				return 0;
-			}
-			else if ((1 << pv) & mask){
-				break;
-			}
-		}
-	}
-	else{
-		for (int k = x - 1; k >= 0; --k){
-			int pv = k * C + y;
-			if (M[k][y] == '#'){
-				return 0;
-			}
-			else if ((1 << pv) & mask){
-				break;
-			}
-		}
-		for (int k = x + 1; k < R; ++k){
-			int pv = k * C + y;
-			if (M[k][y] == '#'){
-				return 0;
-			}
-			else if ((1 << pv) & mask){
-				break;
-			}
-		}
-	}
-
-	return 1;
-}
 
 bool ok(int x1, int y1, int x2, int y2, int x, int y) {
 	if (x != -1) {
