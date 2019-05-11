@@ -201,6 +201,8 @@ void getLRM(){
 		int lll = binary_search_min(ll, rr);
 		int rrr = binary_search_max(ll, rr);
 		assert(lll <= rrr);
+		assert(lll >= 1&&lll <= i || lll==-1);
+		assert(rrr >= 1&&rrr <= i || rrr==-1);
 		if (lll == -1){
 			assert(rrr == -1);
 			Lnum[i] = 0;
@@ -229,6 +231,8 @@ void getLRM(){
 		int rrr = binary_search_min2(ll, rr);
 		int lll = binary_search_max2(ll, rr);
 		assert(lll <= rrr);
+		assert(lll >= i&&lll <= N || lll==-1);
+		assert(rrr >= i&&rrr <= N || lll==-1);
 		if (lll == -1){
 			assert(rrr == -1);
 			Rnum[i] = 0;
@@ -248,12 +252,55 @@ void getLRM(){
 
 }
 
+int p = 0;
+void getInput(int n,int m){
+	ofstream out("C:\\input.txt");
+
+	srand(time(0));
+	int k = abs(rand()) % m;
+	cout << "k" << k << endl;
+	out << n << " " << k << endl;
+	for (int i = 1; i <= n; ++i){
+		out << abs(rand())%m  << " ";
+	}
+	out << endl;
+	for (int i = 1; i <= n; ++i){
+		out << abs(rand())%m  << " ";
+	}
+	out << endl;
+	out.close();
+}
+
 int main(){
+//	N = 1000;
+//	VV.clear();
+//	/*VV.push_back(mp(20, 999));
+//	VV.push_back(mp(15, 100));
+//	VV.push_back(mp(12, 50));
+//	VV.push_back(mp(10, 30));
+//	VV.push_back(mp(5, 20));*/
+//	VV.push_back(mp(20, 20));
+//	VV.push_back(mp(15, 30));
+//	VV.push_back(mp(12, 50));
+//	VV.push_back(mp(10, 100));
+//	VV.push_back(mp(5, 999));
+//
+//	int ll = 5;
+//	int rr = 20;
+////	int rrr = binary_search_min2(ll, rr);
+////	int lll = binary_search_max2(ll, rr);
+//	int lll = binary_search_min(ll, rr);
+//	int rrr = binary_search_max(ll, rr);
+//	cout << lll << " " << rrr << endl;
+
+
+//	return 0;
 
 	int CPP = 1;
 	int TEST_CASE = 1;
 	in >> TEST_CASE;
 	while (TEST_CASE-- > 0){
+	//	getInput(10, 1000);
 		_init();
 		input();
 
@@ -274,6 +321,32 @@ int main(){
 
 		}
 
+		/*for (int i = 1; i <= N / 2; ++i){
+			swap(A[i], A[N - i + 1]);
+			swap(B[i], B[N - i + 1]);
+		}*/
+
+		/*getLR();
+
+
+		getLRM();
+*/
+
+		//LL ans2 = 0;
+		//for (int i = 1; i <= N; ++i){
+		//	LL l_num = i - L[i] + 1;
+		//	LL r_num = R[i] - i + 1;
+		//	assert(l_num >= 0 && r_num >= 0);
+		//	assert(Lnum[i] >= 0 && Rnum[i] >= 0);
+		//	//		assert(Lnum[i] <= l_num && Rnum[i] <= r_num);
+		//	ans2 += Lnum[i] * r_num + Rnum[i] * l_num - Lnum[i] * Rnum[i];
+
+		//}
+
+		////assert(ans == ans2);
+		//if (ans != ans2){
+		//	break;
+		//}
 
 		printf("Case #%d: %lld\n", CPP++, ans);
 
