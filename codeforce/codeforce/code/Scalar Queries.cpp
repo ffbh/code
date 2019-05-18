@@ -19,13 +19,12 @@ using namespace std;
 
 #ifndef ONLINE_JUDGE
 ifstream in("C:\\input.txt");
+#define Debug(v) cerr<<#v<<"="<<v<<'\n'
 #endif
 
 #ifdef ONLINE_JUDGE
 istream& in = cin;
-#define LYSS_CONNECTCHAR(a,b) a##b
-#define ANNOTATION LYSS_CONNECTCHAR(/,/)
-#define cerr ANNOTATION
+#define Debug(v) ;
 #endif
 
 
@@ -142,7 +141,7 @@ int main(){
 		_init();
 		input();
 
-		cerr << b_force() << endl;
+	//	Debug(b_force());
 
 		sort(p + 1, p + n + 1);
 
